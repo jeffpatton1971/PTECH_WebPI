@@ -103,7 +103,11 @@ function Set-TargetResource
 		{
 			'Absent'
 			{
-
+				if ($Product.IsInstalled($useCachedValue))
+				{
+					$InstalledProduct = Get-WmiObject -Class Win32_Product -Filter "Name LIKE '%$($Title)%'";
+					$InstalledProduct.Uninstall();
+				}
 			}
 			'Present'
 			{
