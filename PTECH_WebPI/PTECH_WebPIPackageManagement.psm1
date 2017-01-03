@@ -16,8 +16,53 @@ function Get-TargetResource
 		$ErrorActionPreference = 'Stop';
 		$Error.Clear();
 
-		Write-Verbose "Incoming Param Title      : $($Title)"
-		Write-Verbose "Incoming Param Ensure     : $($Ensure)"
+		$useCachedValue = $false;
+
+		Write-Verbose "Incoming Param Title      : $($Title)";
+		Write-Verbose "Incoming Param Ensure     : $($Ensure)";
+
+		$EnsurePresent = 'Absent';
+		$Package = Get-WebPiProduct -Title $Title;
+		$IsInstalled = $Package.IsInstalled($useCachedValue);
+
+		switch ($Ensure)
+		{
+			'Absent'
+			{
+				#
+				# Package must not be installed
+				#
+				if ($IsInstalled)
+				{
+					$EnsurePresent = 'Present';
+				}
+				else
+				{
+					$EnsurePresent = 'Absent';
+				}
+			}
+			'Present'
+			{
+				#
+				# Package must be installed
+				#
+				if ($IsInstalled)
+				{
+					$EnsurePresent = 'Present';
+				}
+				else
+				{
+					$EnsurePresent = 'Absent';
+				}
+			}
+		}
+
+		$returnValue = @{
+			Title = $Title
+			Ensure = $EnsurePresent
+		};
+
+		return $returnValue;
 	}
 	catch
 	{
@@ -46,9 +91,25 @@ function Set-TargetResource
 		$ErrorActionPreference = 'Stop';
 		$Error.Clear();
 
-		Write-Verbose "Incoming Param Title      : $($Title)"
-		Write-Verbose "Incoming Param LanguageId : $($LanguageId)"
-		Write-Verbose "Incoming Param Ensure     : $($Ensure)"
+		$useCachedValue = $false;
+
+		Write-Verbose "Incoming Param Title      : $($Title)";
+		Write-Verbose "Incoming Param LanguageId : $($LanguageId)";
+		Write-Verbose "Incoming Param Ensure     : $($Ensure)";
+
+		$Product = Get-WebPiProduct -Title $Title;
+
+		switch ($Ensure)
+		{
+			'Absent'
+			{
+
+			}
+			'Present'
+			{
+				$Package = Install-WebPiProduct -Product $Product -LanguageID $LanguageId;
+			}
+		}
 	}
 	catch
 	{
@@ -74,8 +135,15 @@ function Test-TargetResource
 		$ErrorActionPreference = 'Stop';
 		$Error.Clear();
 
-		Write-Verbose "Incoming Param Title      : $($Title)"
-		Write-Verbose "Incoming Param Ensure     : $($Ensure)"
+		$useCachedValue = $false;
+
+		Write-Verbose "Incoming Param Title      : $($Title)";
+		Write-Verbose "Incoming Param Ensure     : $($Ensure)";
+
+		$Package = Get-WebPiProduct -Title $Title;
+		
+		return $Package.IsInstalled($useCachedValue);
+
 	}
 	catch
 	{

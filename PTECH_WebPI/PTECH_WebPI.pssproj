@@ -29,8 +29,7 @@
   <ItemGroup />
   <ItemGroup>
     <Compile Include="PTECH_WebPI.psd1" />
-    <Compile Include="PTECH_WebPI.psm1" />
-    <Compile Include="PTECH_WebPI.tests.ps1" />
+    <Compile Include="PTECH_WebPIPackageManagement.psm1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
